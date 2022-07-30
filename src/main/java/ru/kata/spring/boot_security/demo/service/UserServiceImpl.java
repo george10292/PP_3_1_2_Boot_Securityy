@@ -48,6 +48,7 @@ public class UserServiceImpl implements  UserService, UserDetailsService {
     }
 
     //Добавление юзера
+    @Transactional
     public User userAdd(User user){
         user.setRoles(user.getRoles());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -55,18 +56,18 @@ public class UserServiceImpl implements  UserService, UserDetailsService {
     }
 
     //Удаление юзера
+    @Transactional
     public void userDelete(long id){userRepository.deleteById(id);}
 
     //Поиск Юзера по имени
     public User findByUsername(String username){
-        return userRepository.getByUsername(username);
+        return userRepository.getUserWithRoles(username);
     }
 
     //Загрузка юзера
     @Override
-    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.getByUsername(username);
+        User user = userRepository.getUserWithRoles(username);
         if(user == null){
             throw new UsernameNotFoundException (String.format("User not found ", username));
         }
@@ -81,7 +82,7 @@ public class UserServiceImpl implements  UserService, UserDetailsService {
     public Set<Role> getRoles(String[] roles){
         Set<Role> roleSet = new HashSet<>();
         for (String role : roles) {
-            roleSet.add(roleRepository.findByName(role));
+            roleSet.add(roleRepository.getRoleModelByName(role));
         }
         return roleSet;
     }

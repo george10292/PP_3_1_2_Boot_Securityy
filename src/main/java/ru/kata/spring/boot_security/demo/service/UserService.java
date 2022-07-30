@@ -17,8 +17,6 @@ public interface UserService {
     void userDelete(long id);
     User findByUsername(String username);
 
-    //Загрузка юзера
-    @Transactional(readOnly = true)
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
     Set<Role> getRoles(String[] roles);
